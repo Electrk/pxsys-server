@@ -9,7 +9,7 @@ const PxSysScreen = rfr ('classes/PxSysScreen.js');
 describe ('PxSysScreen', function ()
 {
 	const width         = 161;
-	const height        = 123;
+	const height        = 124;
 	const defaultValues = { colorID: 0 };
 	const screen        = new PxSysScreen ({ width, height, defaultValues });
 
