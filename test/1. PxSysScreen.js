@@ -1,5 +1,7 @@
 const rfr = require ('rfr');
-const { expect } = require ('chai');
+
+const { AssertionError } = require ('assert');
+const { expect }         = require ('chai');
 
 const PxSysScreen = rfr ('classes/PxSysScreen.js');
 
@@ -86,5 +88,27 @@ describe ('PxSysScreen', function ()
 			expect (pixel[2]).to.equal (toChange[2]);
 			expect (pixel[3]).to.equal (toChange[3]);
 		}
+	});
+
+	it (`should throw an error when you try to set a pixel with an invalid coordinate`, function ()
+	{
+		expect (() => screen.setPixel (width, height, 't', 'b')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, height, 't', 'b')).to.throw (AssertionError);
+		expect (() => screen.setPixel (width, 0, 't', 'b')).to.throw (AssertionError);
+		expect (() => screen.setPixel (-1, -1, 't', 'b')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, -1, 't', 'b')).to.throw (AssertionError);
+		expect (() => screen.setPixel (-1, 0, 't', 'b')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, 't', 'b')).to.not.throw (AssertionError);
+	});
+
+	it (`should throw an error when you try to set a pixel with an invalid key`, function ()
+	{
+		expect (() => screen.setPixel (0, 0, 5, '...')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, -1213, '...')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, 0.0029, '...')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, [], '...')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, {}, '...')).to.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, 'aaaa', '...')).to.not.throw (AssertionError);
+		expect (() => screen.setPixel (0, 0, 'colorID', 5)).to.not.throw (AssertionError);
 	});
 });
