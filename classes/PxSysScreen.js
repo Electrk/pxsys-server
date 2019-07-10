@@ -3,6 +3,7 @@ const cloneDeep = require ('clone-deep');
 const deepEqual = require ('deep-equal');
 
 const { pixelCoordsAssert, requiredArgsAssert } = rfr ('utility/miscellaneous.js');
+const { stringTypeAssert } = rfr ('utility/typeAssert.js');
 
 
 class PxSysScreen
@@ -58,6 +59,7 @@ class PxSysScreen
 	setPixel ( x, y, key, value )
 	{
 		pixelCoordsAssert (x, y, this.width, this.height);
+		stringTypeAssert (key, 'key');
 
 		const currentValues = this._videoMemory[x][y];
 
