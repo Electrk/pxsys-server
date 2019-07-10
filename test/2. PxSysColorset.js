@@ -76,6 +76,9 @@ describe ('PxSysColorset', function ()
 		expect (() => colorset.setColor (0.0000523, '1 1 1 1')).to.throw (AssertionError);
 		expect (() => colorset.setColor ([], '1 1 1 1')).to.throw (AssertionError);
 		expect (() => colorset.setColor ({}, '1 1 1 1')).to.throw (AssertionError);
+		expect (() => colorset.setColor (0, '1 1 1 1')).to.not.throw (AssertionError);
+		expect (() => colorset.setColor (6, '1 1 1 1')).to.not.throw (AssertionError);
+		expect (() => colorset.setColor (maxColors - 1, '1 1 1 1')).to.not.throw (AssertionError);
 	});
 
 	it (`should throw an error when you try to set an invalid color`, function ()
@@ -91,5 +94,6 @@ describe ('PxSysColorset', function ()
 		expect (() => colorset.setColor (0, 'a a a a')).to.throw (AssertionError);
 		expect (() => colorset.setColor (0, 'b g m s a')).to.throw (AssertionError);
 		expect (() => colorset.setColor (0, '1  1 1')).to.throw (AssertionError);
+		expect (() => colorset.setColor (0, '0.5 0.01 .2 1.0')).to.not.throw (AssertionError);
 	});
 });
