@@ -4,7 +4,7 @@ const cloneDeep = require ('clone-deep');
 const { minAssert, clampAssert } = rfr ('utility/mathAssert.js');
 const { integerTypeAssert }      = rfr ('utility/typeAssert.js');
 
-const { convertToRGBAObject, toRGBAString, colorAssert } = rfr ('utility/colors.js');
+const { toRGBAString, colorAssert } = rfr ('utility/colors.js');
 
 
 class PxSysColorset
