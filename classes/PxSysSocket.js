@@ -24,7 +24,6 @@ class PxSysSocket
 	delete ()
 	{
 		this._socket.end ();
-
 		delete this._socket;
 	}
 
