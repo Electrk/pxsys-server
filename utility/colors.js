@@ -27,10 +27,30 @@ const convertToRGBAObject = ( color ) =>
 			return null;
 		}
 
-		rgba.r = colorArr[0];
-		rgba.g = colorArr[1];
-		rgba.b = colorArr[2];
-		rgba.a = colorArr[3];
+		rgba =
+		{
+			r: colorArr[0],
+			g: colorArr[1],
+			b: colorArr[2],
+			a: colorArr[3],
+		};
+	}
+
+	/* Let's do some checks to make sure the colors are actually numbers */
+
+	if ( rgba.r === ''  ||  rgba.g === ''  ||  rgba.b === ''  ||  rgba.a === '' )
+	{
+		return null;
+	}
+
+	rgba.r *= 1;
+	rgba.g *= 1;
+	rgba.b *= 1;
+	rgba.a *= 1;
+
+	if ( isNaN (rgba.r)  ||  isNaN (rgba.g)  ||  isNaN (rgba.b)  ||  isNaN (rgba.a) )
+	{
+		return null;
 	}
 
 	if ( !hasMulti (rgba, 'r', 'g', 'b', 'a') )
@@ -55,9 +75,7 @@ const toRGBAString = ( color ) =>
 
 const colorAssert = ( color ) =>
 {
-	const colorObj = convertToRGBAObject (color);
-
-	assert.notStrictEqual (colorObj, null, 'Color must be RGBA!');
+	assert.notStrictEqual (convertToRGBAObject (color), null, 'Color must be RGBA!');
 };
 
 
