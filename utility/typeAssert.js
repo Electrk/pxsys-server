@@ -18,7 +18,8 @@ const integerTypeAssert = ( value, valueName = 'Value', message = `${valueName} 
 
 const numberTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be a number!` ) =>
 {
-	assert.ok (!Number.isNaN (value), message);
+	assert.strictEqual (typeof value, 'number', message);
+	assert.ok (!isNaN (value), message);
 };
 
 const stringTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be a string!` ) =>
