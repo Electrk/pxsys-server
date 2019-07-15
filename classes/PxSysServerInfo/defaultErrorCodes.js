@@ -15,9 +15,15 @@ const defaultErrorCodes =
 	// Invalid admin credentials
 	'CL_BAD_ADMIN',
 
+	// The client's PxSys version is not a number
+	'CL_BAD_PX_VER',
+
+	// The client's application version is not a number
+	'CL_BAD_APP_VER',
+
 	/* SV_ is for errors on the server side */
 
-	// TODO
+	// Nothing to see here, it seems!
 
 	/* CS_ is for errors that aren't specific to either side */
 
