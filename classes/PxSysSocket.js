@@ -49,11 +49,6 @@ class PxSysSocket
 		this._writeLine (`${command}\t${args.join ('\t')}`);
 	}
 
-	getTCPSocket ()
-	{
-		return this._socket;
-	}
-
 	// ------------------------------------------------
 
 
