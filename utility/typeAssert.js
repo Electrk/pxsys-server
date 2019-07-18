@@ -29,15 +29,18 @@ const stringTypeAssert = ( value, valueName = 'Value', message = `${valueName} m
 
 const objectTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be a non-array object!` ) =>
 {
-	const check = (typeof value === 'object'  &&  !Array.isArray (value));
-
-	assert.ok (check, message);
+	assert.ok (typeof value === 'object'  &&  !Array.isArray (value), message);
 };
 
 const arrayTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be an array!` ) =>
 {
 	assert.ok (Array.isArray (value), message);
 };
+
+const functionTypeAssert  = ( value, valueName = 'Value', message = `${valueName} must be a function!` ) =>
+{
+	assert.strictEqual (typeof value, 'function', message);
+}
 
 const notNullAssert = ( value, valueName = 'Value', message = `${valueName} is null!` ) =>
 {
