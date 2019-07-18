@@ -5,8 +5,9 @@ const PxSysColorset      = rfr ('classes/PxSysColorset.js');
 const PxSysScreen        = rfr ('classes/PxSysScreen.js');
 const EnumBag            = rfr ('classes/EnumBag.js');
 
-const defaultCommandCodes = require ('./defaultCommandCodes.js');
-const defaultErrorCodes   = require ('./defaultErrorCodes.js');
+const defaultCommandCodes   = require ('./defaultCommandCodes.js');
+const defaultErrorCodes     = require ('./defaultErrorCodes.js');
+const defaultPacketHandlers = require ('./defaultPacketHandlers.js');
 
 const { requiredArgsAssert } = rfr ('utility/miscellaneous.js');
 const { instanceOfAssert }   = rfr ('utility/typeAssert.js');
@@ -23,7 +24,7 @@ class PxSys
 		instanceOfAssert (screen, PxSysScreen, 'screen');
 		instanceOfAssert (colorset, PxSysColorset, 'colorset');
 
-		this.isDeleted  = false;
+		this.isDeleted = false;
 
 		this._server        = null;
 		this._serverInfo    = null;
@@ -31,10 +32,17 @@ class PxSys
 		this._colorset      = colorset;
 		this._socketManager = new PxSysSocketManager ();
 
-		this._screenFields  = {};
+		this._screenFields = {};
 
-		this._commandCodes  = new EnumBag (...defaultCommandCodes);
-		this._errorCodes    = new EnumBag (...defaultErrorCodes);
+		this._commandCodes = new EnumBag (...defaultCommandCodes);
+		this._errorCodes   = new EnumBag (...defaultErrorCodes);
+
+		this._packetHandlers = new Map ();
+
+		for ( let packetType in defaultPacketHandlers )
+		{
+			this.addPacketHandler (packetType, defaultPacketHandlers[packetType]);
+		}
 	}
 
 	delete ( onServerClose )
@@ -51,12 +59,23 @@ class PxSys
 		this._colorset.delete ();
 		this._screen.delete ();
 
+		const packetHandlers = this._packetHandlers;
+
+		for ( let packetType of packetHandlers )
+		{
+			let handlerSet = packetHandlers.get (packetType);
+			handlerSet.clear ();
+		}
+
+		this._packetHandlers.clear ();
+
 		delete this._screen;
 		delete this._colorset;
 		delete this._socketManager;
 		delete this._screenFields;
 		delete this._commandCodes;
 		delete this._errorCodes;
+		delete this._packetHandlers;
 
 		this.isDeleted = true;
 	}

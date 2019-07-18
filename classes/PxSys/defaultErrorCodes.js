@@ -12,6 +12,9 @@ const defaultErrorCodes =
 	// The data you have sent was malformed
 	'CL_MALFORMED_DATA',
 
+	// Unknown packet type
+	'CL_UNK_PACKET_TYPE',
+
 	// You have not authenticated with the server yet
 	'CL_NOT_AUTHED',
 

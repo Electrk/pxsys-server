@@ -1,11 +1,33 @@
 const rfr = require ('rfr');
 const has = require ('has-own-property-x');
 
-const { integerTypeAssert } = rfr ('utility/typeAssert.js');
+const { integerTypeAssert, stringTypeAssert, functionTypeAssert } = rfr ('utility/typeAssert.js');
 
 
 module.exports = ( PxSys ) =>
 {
+	PxSys.prototype.addPacketHandler = function ( packetType, callback )
+	{
+		stringTypeAssert (packetType, 'packetType');
+		functionTypeAssert (callback, 'callback');
+
+		const boundCallback = callback.bind (this);
+
+		if ( !this._packetHandlers.has (packetType) )
+		{
+			this._packetHandlers.set (packetType, new Set ());
+		}
+
+		const handlerSet = this._packetHandlers.get (packetType);
+
+		if ( !handlerSet.has (boundCallback) )
+		{
+			handlerSet.add (boundCallback);
+		}
+
+		return boundCallback;
+	};
+
 	PxSys.prototype._onData = function ( pxSocket, data )
 	{
 		if ( this.isDeleted )
@@ -14,33 +36,15 @@ module.exports = ( PxSys ) =>
 		}
 
 		const dataString = data.toString ();
-		let dataJSON;
+		const dataArray  = dataString.split ('\t');
 
-		this.log ('Received:', dataString);
-
-		try
+		if ( dataArray.length <= 0 )
 		{
-			dataJSON = JSON.parse (dataString);
-
-			if ( !has (dataJSON, 'packetType') )
-			{
-				throw new Error ('Packet missing `packetType` property!');
-			}
-
-			if ( !has (dataJSON, 'data') )
-			{
-				throw new Error ('Packet missing `data` property!');
-			}
-
-			integerTypeAssert (dataJSON.packetType, 'packetType');
-		}
-		catch ( error )
-		{
-			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_MALFORMED_PACKET', error.message);
+			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_MALFORMED_PACKET', 'Missing packet type!');
 			return;
 		}
 
-		const packetType = this.getCommandString (dataJSON.packetType);
+		const packetType = this._commandCodes.getName (dataArray[0]);
 
 		if ( !pxSocket.isAuthed  &&  packetType !== 'CL_AUTH_INFO' )
 		{
@@ -48,13 +52,20 @@ module.exports = ( PxSys ) =>
 			return;
 		}
 
-		switch ( packetType )
+		dataArray.shift ();
+
+		if ( this._packetHandlers.has (packetType) )
 		{
-			case 'CL_AUTH_INFO':
+			const handlers = this._packetHandlers.get (packetType);
+
+			for ( let handlerFunction of handlers )
 			{
-				this.authenticate (pxSocket, dataJSON.data);
-				break;
+				handlerFunction (pxSocket, dataArray);
 			}
+		}
+		else
+		{
+			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_UNK_PACKET_TYPE', 'Unknown packet type.');
 		}
 	};
 };
