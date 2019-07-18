@@ -1,6 +1,5 @@
 const rfr  = require ('rfr');
 const has  = require ('has');
-const uuid = require ('uuid/v4');
 
 const PxSysSocket = rfr ('classes/PxSysSocket.js');
 
