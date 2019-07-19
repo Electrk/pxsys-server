@@ -39,6 +39,7 @@ describe ('PxSysSocketManager', function ()
 
 		expect (manager._sockets.has (pxSocket)).to.be.false;
 		expect (pxSocket).to.not.have.own.property ('_socket');
+		expect (pxSocket.isDeleted).to.be.true;
 	});
 
 	it (`should apply event listeners to existing and any later-added sockets`, function ( done )
