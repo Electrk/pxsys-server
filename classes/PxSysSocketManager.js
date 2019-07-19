@@ -1,5 +1,4 @@
-const rfr  = require ('rfr');
-const has  = require ('has');
+const rfr = require ('rfr');
 
 const PxSysSocket = rfr ('classes/PxSysSocket.js');
 
@@ -8,12 +7,19 @@ class PxSysSocketManager
 {
 	constructor ()
 	{
+		this.isDeleted = false;
+
 		this._sockets = new Set ();
 		this._events  = new Map ();
 	}
 
 	delete ()
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		const events  = this._events;
 		const sockets = this._sockets;
 
@@ -22,9 +28,9 @@ class PxSysSocketManager
 			events.get (eventName).clear ();
 		}
 
-		this.forEach (socket =>
+		this.forEach (pxSocket =>
 		{
-			socket.delete ();
+			pxSocket.delete ();
 		});
 
 		events.clear ();
@@ -32,10 +38,17 @@ class PxSysSocketManager
 
 		delete this._events;
 		delete this._sockets;
+
+		this.isDeleted = true;
 	}
 
 	addSocket ( tcpSocket )
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		const pxSocket = new PxSysSocket (tcpSocket);
 		const manager  = this;
 
@@ -52,6 +65,11 @@ class PxSysSocketManager
 
 	removeSocket ( pxSocket )
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		this._sockets.delete (pxSocket);
 		pxSocket.delete ();
 	}
@@ -62,7 +80,7 @@ class PxSysSocketManager
 
 		for ( let socket of sockets )
 		{
-			callback (socket, id, sockets);
+			callback (socket, sockets);
 		}
 	}
 
@@ -87,10 +105,10 @@ class PxSysSocketManager
 
 		if ( !events.has (event) )
 		{
-			event.set (event, new Set ());
+			events.set (event, new Set ());
 		}
 
-		const eventSet = event.get (event);
+		const eventSet = events.get (event);
 
 		if ( !eventSet.has (listener) )
 		{
@@ -119,7 +137,7 @@ class PxSysSocketManager
 			socket.off (event, listener);
 		});
 
-		event.get (event).delete (listener);
+		events.get (event).delete (listener);
 
 		return listener;
 	}
@@ -147,7 +165,7 @@ class PxSysSocketManager
 	{
 		const events = this._events;
 
-		for ( let eventName of events )
+		for ( let [eventName, eventSet] of events )
 		{
 			this._applyEventListener (eventName, socket);
 		}
