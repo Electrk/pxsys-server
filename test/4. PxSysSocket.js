@@ -1,6 +1,5 @@
 const rfr = require ('rfr');
 const net = require ('net');
-const has = require ('has-own-property-x');
 
 const { Socket }         = net;
 const { AssertionError } = require ('assert');
@@ -33,7 +32,7 @@ describe ('PxSysSocket', function ()
 			});
 		});
 
-		const onSocketConnected = function ( done )
+		const onSocketConnected = function ()
 		{
 			pxSocket.sendCommand (...dataToSend);
 		};
