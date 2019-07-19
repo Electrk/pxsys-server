@@ -22,16 +22,25 @@ class PxSysServer
 
 		const server = net.createServer ();
 
+		this.isDeleted = false;
+
 		this._onEnd  = onServerEnd;
 		this._server = server.listen (port, address, onServerStart);
 	}
 
 	delete ( callback )
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		this._close (callback);
 
 		delete this._onEnd;
 		delete this._server;
+
+		this.isDeleted = true;
 	}
 
 	on ( event, callback )

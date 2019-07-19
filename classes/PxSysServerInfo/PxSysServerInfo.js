@@ -25,6 +25,7 @@ class PxSysServerInfo
 		stringTypeAssert (appName, 'appName');
 		numberTypeAssert (appVersion, 'appVersion');
 
+		this.isDeleted  = false;
 		this.appVersion = appVersion;
 		this.appName    = appName;
 
@@ -36,16 +37,28 @@ class PxSysServerInfo
 
 	delete ()
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		delete this.appVersion;
 		delete this.appName;
 		delete this._errorCodes;
 		delete this._errorMessages;
 		delete this._loginKey;
 		delete this._adminKey;
+
+		this.isDeleted = true;
 	}
 
 	validateInfo ( info = {} )
 	{
+		if ( this.isDeleted )
+		{
+			return null;
+		}
+
 		const { loginKey, pxSysVersion, appVersion, appName, adminKey } = info;
 
 		const errors = new ErrorList (this._errorCodes, this._errorMessages);

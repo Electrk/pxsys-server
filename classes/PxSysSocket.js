@@ -30,6 +30,9 @@ class PxSysSocket
 		}
 
 		this._socket.end ();
+
+		delete this.isAuthed;
+		delete this.isAdmin;
 		delete this._socket;
 
 		this.isDeleted = true;

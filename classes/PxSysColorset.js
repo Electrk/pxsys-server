@@ -24,16 +24,25 @@ class PxSysColorset
 			colors.push ('1.0 0.0 1.0 0.0');
 		}
 
+		this.isDeleted = false;
+
 		this._colors    = colors;
 		this._colorToID = colorToID;
 	}
 
 	delete ()
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		this._colorToID.clear ();
 
-		delete this._colorToID;
 		delete this._colors;
+		delete this._colorToID;
+
+		this.isDeleted = true;
 	}
 
 	forEach ( callback )

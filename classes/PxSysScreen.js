@@ -27,8 +27,9 @@ class PxSysScreen
 			videoMemory.push (col);
 		}
 
-		this.width  = width;
-		this.height = height;
+		this.isDeleted = false;
+		this.width     = width;
+		this.height    = height;
 
 		this._defaultValues = defaultValues;
 		this._videoMemory   = videoMemory;
@@ -37,11 +38,18 @@ class PxSysScreen
 
 	delete ()
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		delete this.width;
 		delete this.height;
 		delete this._defaultValues;
 		delete this._videoMemory;
 		delete this._changedPixels;
+
+		this.isDeleted = true;
 	}
 
 	getDefaultPixelValues ()
