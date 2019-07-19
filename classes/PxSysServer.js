@@ -13,12 +13,12 @@ class PxSysServer
 		{ 
 			port,
 			address,
-			onServerStart,
 
-			onServerEnd = function () {},
+			onServerStart = function () {},
+			onServerEnd   = function () {},
 		} = config;
 
-		requiredArgsAssert ({ port, address, onServerStart });
+		requiredArgsAssert ({ port, address });
 
 		const server = net.createServer ();
 
@@ -28,19 +28,24 @@ class PxSysServer
 		this._server = server.listen (port, address, onServerStart);
 	}
 
-	delete ( callback )
+	delete ( callback = function () {} )
 	{
 		if ( this.isDeleted )
 		{
 			return;
 		}
 
-		this._close (callback);
+		const closeCallback = function ( ...args )
+		{
+			callback (...args);
 
-		delete this._onEnd;
-		delete this._server;
+			delete this._onEnd;
+			delete this._server;
 
-		this.isDeleted = true;
+			this.isDeleted = true;
+		};
+
+		this._close (closeCallback.bind (this));
 	}
 
 	on ( event, callback )
@@ -50,14 +55,13 @@ class PxSysServer
 
 	_close ( callback )
 	{
-		const closeCallback = ( ...args ) =>
+		const closeCallback = function ( ...args )
 		{
 			this._onEnd (...args);
-
 			callback (...args);
 		};
 
-		this._server.close (closeCallback);
+		this._server.close (closeCallback.bind (this));
 	}
 }
 
