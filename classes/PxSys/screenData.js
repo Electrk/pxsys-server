@@ -8,7 +8,7 @@ module.exports = ( PxSys ) =>
 	{
 		requiredArgsAssert ({ fieldName, defaultValue, commandString });
 
-		this._commandCodes.add (commandString);
+		this.addCommand (commandString);
 		this._screenFields[fieldName] = { defaultValue, commandString };
 	};
 

@@ -94,6 +94,26 @@ class PxSys
 		this._logMessage ('error', ...args);
 	}
 
+	addCommand ( commandString )
+	{
+		if ( !this._commandCodes.has (commandString) )
+		{
+			this._commandCodes.add (commandString);
+		}
+
+		return this._commandCodes.get (commandString);
+	}
+
+	addError ( errorString )
+	{
+		if ( !this._errorCodes.has (errorString) )
+		{
+			this._errorCodes.add (errorString);
+		}
+
+		return this._errorCodes.get (errorString);
+	}
+
 	getCommandCode ( name )
 	{
 		return this._commandCodes.get (name);
