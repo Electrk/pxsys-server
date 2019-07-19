@@ -105,7 +105,7 @@ module.exports = ( PxSys ) =>
 	{
 		if ( !this.isDeleted  &&  this._server !== null )
 		{
-			this._server._close (callback);
+			this._server.delete (callback);
 			this._server = null;
 		}
 	};
