@@ -61,9 +61,8 @@ class PxSys
 
 		const packetHandlers = this._packetHandlers;
 
-		for ( let packetType of packetHandlers )
+		for ( let [packetType, handlerSet] of packetHandlers )
 		{
-			let handlerSet = packetHandlers.get (packetType);
 			handlerSet.clear ();
 		}
 

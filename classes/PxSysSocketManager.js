@@ -23,7 +23,7 @@ class PxSysSocketManager
 		const events  = this._events;
 		const sockets = this._sockets;
 
-		for ( let eventName of events )
+		for ( let [eventName, eventSet] of events )
 		{
 			events.get (eventName).clear ();
 		}
