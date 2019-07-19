@@ -15,16 +15,24 @@ class PxSysSocket
 		requiredArgsAssert ({ tcpSocket });
 		instanceOfAssert (tcpSocket, Socket);
 
-		this.isAuthed = false;
-		this.isAdmin  = false;
+		this.isDeleted = false;
+		this.isAuthed  = false;
+		this.isAdmin   = false;
 
 		this._socket = tcpSocket;
 	}
 
 	delete ()
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		this._socket.end ();
 		delete this._socket;
+
+		this.isDeleted = true;
 	}
 
 	on ( event, listener )
