@@ -3,6 +3,8 @@ const rfr = require ('rfr');
 const PxSysServer     = rfr ('classes/PxSysServer.js');
 const PxSysServerInfo = rfr ('classes/PxSysServerInfo/PxSysServerInfo.js');
 
+const { notNullAssert } = rfr ('utility/typeAssert.js');
+
 
 module.exports = ( PxSys ) =>
 {
@@ -23,11 +25,8 @@ module.exports = ( PxSys ) =>
 			return;
 		}
 
-		if ( this._serverInfo === null )
-		{
-			this.error ('Failure!  Please set the server info before attempting to create a server.');
-			return;
-		}
+		const errorMsg = 'Failure!  Please set the server info before attempting to create a server.';
+		notNullAssert (this._serverInfo, '', errorMsg);
 
 		const
 		{ 
