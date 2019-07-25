@@ -23,9 +23,11 @@ class PxSysServer
 		const server = net.createServer ();
 
 		this.isDeleted = false;
+		this.port      = port;
+		this.address   = address;
 
-		this._onEnd  = onServerEnd;
-		this._server = server.listen (port, address, onServerStart);
+		this._onEnd   = onServerEnd;
+		this._server  = server.listen (port, address, onServerStart);
 	}
 
 	delete ( callback = function () {} )
@@ -39,6 +41,8 @@ class PxSysServer
 		{
 			callback (...args);
 
+			delete this.port;
+			delete this.address;
 			delete this._onEnd;
 			delete this._server;
 
