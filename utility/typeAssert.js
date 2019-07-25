@@ -57,6 +57,7 @@ module.exports =
 	stringTypeAssert,
 	objectTypeAssert,
 	arrayTypeAssert,
+	functionTypeAssert,
 
 	notNullAssert,
 };
