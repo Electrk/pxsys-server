@@ -1,26 +1,24 @@
+const has = require ('has');
+
+
 const defaultPacketHandlers =
 {
 	// dataArray: appName, appVersion, pxSysVersion, loginKey[, adminKey]
 
 	CL_AUTH_INFO ( pxSocket, dataArray )
 	{
-		if ( dataArray.length < 4 )
-		{
-			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_MALFORMED_DATA', 'Missing required data.');
-			return;
-		}
+		const authFields = ['appName', 'appVersion', 'pxSysVersion', 'loginKey', 'adminKey'];
+		const length     = authFields.length;
+		const authInfo   = {};
 
-		const authInfo =
+		for ( let i = 0;  i < length;  i++ )
 		{
-			appName:      dataArray[0],
-			appVersion:   dataArray[1],
-			pxSysVersion: dataArray[2],
-			loginKey:     dataArray[3],
-		};
+			if ( i >= dataArray.length )
+			{
+				break;
+			}
 
-		if ( dataArray.length >= 5 )
-		{
-			authInfo.adminKey = dataArray[4];
+			authInfo[authFields[i]] = dataArray[i];
 		}
 
 		this.authenticate (pxSocket, authInfo);
