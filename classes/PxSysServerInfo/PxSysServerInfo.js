@@ -16,18 +16,18 @@ class PxSysServerInfo
 {
 	constructor ( info = {} )
 	{
-		const { loginKey, adminKey, appVersion, appName } = info;
+		const { appName, appVersion, loginKey, adminKey } = info;
 
-		requiredArgsAssert ({ loginKey, adminKey, appVersion, appName });
+		requiredArgsAssert ({ appName, appVersion, loginKey, adminKey });
 
-		stringTypeAssert (loginKey, 'loginKey');
-		stringTypeAssert (adminKey, 'adminKey');
 		stringTypeAssert (appName, 'appName');
 		numberTypeAssert (appVersion, 'appVersion');
+		stringTypeAssert (loginKey, 'loginKey');
+		stringTypeAssert (adminKey, 'adminKey');
 
 		this.isDeleted  = false;
-		this.appVersion = appVersion;
 		this.appName    = appName;
+		this.appVersion = appVersion;
 
 		this._errorCodes     = new EnumBag (...defaultErrorCodes);
 		this._errorMessages  = { ...defaultErrorMessages };
@@ -42,8 +42,8 @@ class PxSysServerInfo
 			return;
 		}
 
-		delete this.appVersion;
 		delete this.appName;
+		delete this.appVersion;
 		delete this._errorCodes;
 		delete this._errorMessages;
 		delete this._loginKey;
@@ -63,7 +63,7 @@ class PxSysServerInfo
 
 		const errors = new ErrorList (this._errorCodes, this._errorMessages);
 
-		const required = ['loginKey', 'pxSysVersion', 'appVersion', 'appName'];
+		const required = ['appName', 'appVersion', 'pxSysVersion', 'loginKey'];
 		const length   = required.length;
 
 		const missing = [];
@@ -85,19 +85,21 @@ class PxSysServerInfo
 		else if ( appName !== this.appName )
 		{
 			// If they're not even using the same application, why bother checking anything else?
-
 			errors.push ('CS_APP_NAME_MM');
 		}
 		else
 		{
-			if ( loginKey !== this._loginKey )
+			if ( isNaN (appVersion) )
 			{
-				errors.push ('CL_BAD_LOGIN');
+				errors.push ('CL_BAD_APP_VER');
 			}
-
-			if ( has (info, 'adminKey')  &&  adminKey !== this._adminKey)
+			else if ( appVersion < this.appVersion )
 			{
-				errors.push ('CL_BAD_ADMIN');
+				errors.push ('CS_APP_VER_NEW');
+			}
+			else if ( appVersion > this.appVersion )
+			{
+				errors.push ('CS_APP_VER_OLD');
 			}
 
 			if ( isNaN (pxSysVersion) )
@@ -113,17 +115,14 @@ class PxSysServerInfo
 				errors.push ('CS_PX_VER_OLD');
 			}
 
-			if ( isNaN (appVersion) )
+			if ( loginKey !== this._loginKey )
 			{
-				errors.push ('CL_BAD_APP_VER');
+				errors.push ('CL_BAD_LOGIN');
 			}
-			else if ( appVersion < this.appVersion )
+
+			if ( has (info, 'adminKey')  &&  adminKey !== this._adminKey)
 			{
-				errors.push ('CS_APP_VER_NEW');
-			}
-			else if ( appVersion > this.appVersion )
-			{
-				errors.push ('CS_APP_VER_OLD');
+				errors.push ('CL_BAD_ADMIN');
 			}
 		}
 

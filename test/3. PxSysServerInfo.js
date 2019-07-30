@@ -16,7 +16,7 @@ describe ('PxSysServerInfo', function ()
 
 	it (`should throw an error when a required field is missing`, function ()
 	{
-		const requiredInfo = ['loginKey', 'adminKey', 'appVersion', 'appName'];
+		const requiredInfo = ['appName', 'appVersion', 'loginKey', 'adminKey'];
 		const length = requiredInfo.length;
 
 		for ( let i = 0;  i < length;  i++ )
@@ -50,7 +50,7 @@ describe ('PxSysServerInfo', function ()
 	it (`when validating, should list out missing required fields`, function ()
 	{
 		const serverInfo   = new PxSysServerInfo (dummyInfo);
-		const requiredInfo = ['loginKey', 'appVersion', 'appName', 'pxSysVersion'];
+		const requiredInfo = ['appName', 'appVersion', 'pxSysVersion', 'loginKey'];
 		const length       = requiredInfo.length;
 
 		for ( let i = 0;  i < length;  i++ )
@@ -90,7 +90,7 @@ describe ('PxSysServerInfo', function ()
 		let errorList = serverInfo.validateInfo (testInfo).getErrors ();
 
 		expect (errorList[0]).to.equal (serverInfo._errorCodes.get ('CL_MISSING_INFO'));
-		expect (errorList[1]).to.equal ('Missing required fields: `loginKey`, `appVersion`');
+		expect (errorList[1]).to.equal ('Missing required fields: `appVersion`, `loginKey`');
 	});
 
 	it (`should throw an error when the login key is not a string`, function ()
