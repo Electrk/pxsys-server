@@ -35,16 +35,16 @@ module.exports = ( PxSys ) =>
 			return;
 		}
 
-		const dataString = data.toString ();
+		const dataString = data.toString ().replace (/\r?\n|\r/g, '');
 		const dataArray  = dataString.split ('\t');
 
-		if ( dataArray.length <= 0 )
+		if ( dataArray.length <= 0  ||  parseInt (dataArray[0]) != dataArray[0] )
 		{
 			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_MALFORMED_PACKET', 'Missing packet type!');
 			return;
 		}
 
-		const packetType = this._commandCodes.getName (dataArray[0]);
+		const packetType = this.getCommandString (parseInt (dataArray[0]));
 
 		if ( !pxSocket.isAuthed  &&  packetType !== 'CL_AUTH_INFO' )
 		{
