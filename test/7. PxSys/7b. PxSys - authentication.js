@@ -147,4 +147,135 @@ describe ('PxSys - authentication', function ()
 
 		pxObject.createServer ({ onStart });
 	});
+
+	it (`should set isAuthed to true when socket is authed and vice versa for not authed`, function ( done )
+	{
+		const tcpSocket = new Socket ();
+
+		let numAuthAttempts = 0;
+		let maxAuthAttempts = 3;
+
+		const onStart = () =>
+		{
+			const onSocketConnected = () =>
+			{
+				const command = pxObject.getCommandCode ('CL_AUTH_INFO');
+				const name    = 'App';
+				const version = 1;
+				const login   = 'l';
+
+				tcpSocket.write (`${command}\r\n`);
+
+				setTimeout (() =>
+				{
+					tcpSocket.write (`${[command, name, version, PXSYS_VERSION, login].join ('\t')}\r\n`);
+				}, 20);
+
+				setTimeout (() =>
+				{
+					tcpSocket.write (`${[command, name, version, Math.random (), Math.random ()].join ('\t')}\r\n`);
+				}, 40);
+			};
+
+			tcpSocket.connect (pxObject._server.port, pxObject._server.address, onSocketConnected);
+		};
+
+		const onConnection = ( socket, pxSocket ) =>
+		{
+			expect (pxSocket.isAuthed).to.be.false;
+
+			pxSocket.on ('data', data =>
+			{
+				numAuthAttempts++;
+
+				if ( numAuthAttempts >= maxAuthAttempts )
+				{
+					pxObject.destroyServer ();
+					tcpSocket.end ();
+
+					done ();
+				}
+				else if ( numAuthAttempts === 1 )
+				{
+					expect (pxSocket.isAuthed).to.be.false;
+				}
+				else if ( numAuthAttempts === 2 )
+				{
+					expect (pxSocket.isAuthed).to.be.true;
+				}
+				else if ( numAuthAttempts === 3 )
+				{
+					expect (pxSocket.isAuthed).to.be.false;
+				}
+			});
+		};
+
+		pxObject.createServer ({ onStart, onConnection });
+	});
+
+	it (`should set isAdmin to true when socket is admin and vice versa for not admin`, function ( done )
+	{
+		const tcpSocket = new Socket ();
+
+		let numAdminAttempts = 0;
+		let maxAdminAttempts = 3;
+
+		const onStart = () =>
+		{
+			const onSocketConnected = () =>
+			{
+				const command = pxObject.getCommandCode ('CL_AUTH_INFO');
+				const name    = 'App';
+				const version = 1;
+				const login   = 'l';
+				const admin   = 'a';
+
+				tcpSocket.write (`${command}\r\n`);
+
+				setTimeout (() =>
+				{
+					tcpSocket.write (`${[command, name, version, PXSYS_VERSION, login, admin].join ('\t')}\r\n`);
+				}, 20);
+
+				setTimeout (() =>
+				{
+					tcpSocket.write (`${[command, name, version, Math.random (), login, Math.random ()].join ('\t')}\r\n`);
+				}, 40);
+			};
+
+			tcpSocket.connect (pxObject._server.port, pxObject._server.address, onSocketConnected);
+		};
+
+		const onConnection = ( socket, pxSocket ) =>
+		{
+			expect (pxSocket.isAdmin).to.be.false;
+
+			pxSocket.on ('data', data =>
+			{
+				numAdminAttempts++;
+
+				if ( numAdminAttempts >= maxAdminAttempts )
+				{
+					pxObject.destroyServer ();
+					tcpSocket.end ();
+
+					done ();
+				}
+				else if ( numAdminAttempts === 1 )
+				{
+					expect (pxSocket.isAdmin).to.be.false;
+				}
+				else if ( numAdminAttempts === 2 )
+				{
+					expect (pxSocket.isAdmin).to.be.true;
+				}
+				else if ( numAdminAttempts === 3 )
+				{
+					expect (pxSocket.isAdmin).to.be.false;
+				}
+			});
+		};
+
+		pxObject.createServer ({ onStart, onConnection });
+	});
 });
