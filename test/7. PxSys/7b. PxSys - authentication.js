@@ -30,16 +30,20 @@ describe ('PxSys - authentication', function ()
 
 		tcpSocket.on ('data', data =>
 		{
-			const dataString = data.toString ();
-			const dataArray  = dataString.split ('\t');
+			const dataString  = data.toString ();
+			const dataArray   = dataString.split ('\t');
+			const packetType  = parseInt (dataArray[0]);
+			const packetError = parseInt (dataArray[1]);
 
-			const testCommand  = pxObject.getCommandCode ('CL_ERROR');
-			const testArgument = pxObject.getErrorCode ('CL_NOT_AUTHED');
+			const testCommand = pxObject.getCommandCode ('CL_ERROR');
+			const testError   = pxObject.getErrorCode ('CL_NOT_AUTHED');
 
 			pxObject.destroyServer ();
 			tcpSocket.end ();
 
-			expect (dataString).to.equal (`${testCommand}\t${testArgument}\r\n`);
+			expect (packetType).to.equal (testCommand);
+			expect (packetError).to.equal (testError);
+
 			done ();
 		});
 
@@ -186,6 +190,37 @@ describe ('PxSys - authentication', function ()
 
 			pxSocket.on ('data', data =>
 			{
+				const dataString = data.toString ().replace (/\r?\n|\r/g, '');
+				const dataArray  = dataString.split ('\t');
+				const packetType = parseInt (dataArray[0]);
+
+				if ( dataArray.length <= 0 )
+				{
+					pxObject.destroyServer ();
+					tcpSocket.end ();
+
+					done (new Error ('Packet is empty!'));
+					return;
+				}
+
+				if ( packetType != dataArray[0] )
+				{
+					pxObject.destroyServer ();
+					tcpSocket.end ();
+
+					done (new TypeError ('Packet type is not an integer!'));
+					return;
+				}
+
+				if ( packetType !== pxObject.getCommandCode ('CL_AUTH_INFO') )
+				{
+					pxObject.destroyServer ();
+					tcpSocket.end ();
+
+					done (new TypeError ('Packet type is not auth info!'));
+					return;
+				}
+
 				numAuthAttempts++;
 
 				if ( numAuthAttempts >= maxAuthAttempts )
