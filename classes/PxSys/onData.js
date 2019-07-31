@@ -52,6 +52,7 @@ module.exports = ( PxSys ) =>
 			return;
 		}
 
+		// Remove packet type because we don't need it anymore
 		dataArray.shift ();
 
 		if ( this._packetHandlers.has (packetType) )
