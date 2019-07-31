@@ -30,6 +30,16 @@ class EnumBag
 		}
 	}
 
+	has ( name )
+	{
+		return this._enums.has (name);
+	}
+
+	hasName ( index )
+	{
+		return this.names.has (index);
+	}
+
 	get ( name )
 	{
 		return this._enums.get (name);
