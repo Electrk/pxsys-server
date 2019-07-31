@@ -48,7 +48,9 @@ module.exports = ( PxSys ) =>
 
 		if ( !pxSocket.isAuthed  &&  packetType !== 'CL_AUTH_INFO' )
 		{
-			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_NOT_AUTHED');
+			const errorMsg = 'You have not authenticated with the server yet!';
+			this.sendSocketError (pxSocket, 'CL_ERROR', 'CL_NOT_AUTHED', errorMsg);
+
 			return;
 		}
 
