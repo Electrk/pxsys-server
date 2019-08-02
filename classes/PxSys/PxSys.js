@@ -12,10 +12,8 @@ const { instanceOfAssert }   = rfr ('utility/typeAssert.js');
 
 class PxSys
 {
-	constructor ( objects = {} )
+	constructor ( screen )
 	{
-		const { screen } = objects;
-
 		requiredArgsAssert ({ screen });
 		instanceOfAssert (screen, PxSysScreen, 'screen');
 
