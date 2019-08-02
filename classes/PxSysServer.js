@@ -4,47 +4,24 @@ const rfr = require ('rfr');
 const logger = rfr ('utility/logger.js');
 
 const { requiredArgsAssert } = rfr ('utility/miscellaneous.js');
-const { notNullAssert }      = rfr ('utility/typeAssert.js');
+const { instanceOfAssert }   = rfr ('utility/typeAssert.js');
 
 
 class PxSysServer
 {
-	constructor ( config = {} )
+	constructor ( port, address, onServerStart = function () {}, onServerEnd = function () {} )
 	{
-		const
-		{ 
-			port,
-			address,
-
-			onServerStart = function () {},
-			onServerEnd   = function () {},
-		} = config;
-
 		requiredArgsAssert ({ port, address });
 
-		const server   = net.createServer ();
-		const pxServer = this;
-
-		server.on ('connection', socket =>
-		{
-			pxServer.sockets.add (socket);
-			socket.on ('close', () => pxServer.delete (socket));
-
-			logger.log (`New connection: ${socket.remoteAddress}:${socket.remotePort}`);
-		});
-
-		server.on ('error', serverError =>
-		{
-			logger.error (`Server Error: ${serverError}`);
-		});
+		const server = net.createServer ();
 
 		this.isDeleted = false;
 		this.port      = port;
 		this.address   = address;
 		this.sockets   = new Set ();
 
-		this._onEnd   = onServerEnd;
-		this._server  = server.listen (port, address, onServerStart);
+		this._onEnd  = onServerEnd;
+		this._server = server.listen (port, address, onServerStart);
 	}
 
 	delete ( callback = function () {} )
@@ -76,6 +53,17 @@ class PxSysServer
 		};
 
 		this._server.close (closeCallback.bind (this));
+	}
+
+	addSocket ( socket )
+	{
+		instanceOfAssert (socket, net.Socket, 'socket');
+		this.sockets.add (socket);
+	}
+
+	removeSocket ( socket )
+	{
+		this.sockets.delete (socket);
 	}
 
 	sendCommand ( socket, command, ...args )
