@@ -49,11 +49,5 @@ const defaultValue = ( value, defaultValue, testNaN = false ) =>
 	return value;
 };
 
-const pixelCoordsAssert = ( x, y, width, height ) =>
-{
-	clampAssert (x, 0, width - 1, 'x');
-	clampAssert (y, 0, height - 1, 'y');
-};
 
-
-module.exports = { hasMulti, requiredArgsAssert, defaultValue, pixelCoordsAssert };
+module.exports = { hasMulti, requiredArgsAssert, defaultValue };
