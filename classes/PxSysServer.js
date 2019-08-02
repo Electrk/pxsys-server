@@ -31,10 +31,10 @@ class PxSysServer
 			return;
 		}
 
-		const closeCallback = function ( ...args )
+		const closeCallback = function ()
 		{
-			this._onEnd (...args);
-			callback (...args);
+			callback ();
+			this._onEnd ();
 
 			for ( let socket of this.sockets )
 			{
