@@ -135,4 +135,39 @@ describe ('PxSys - onData', function ()
 
 		serverTest (done, onSocketConnected, onClientData);
 	});
+
+	it (`should give an error when client sends a packet with an unknown type`, function ( done )
+	{
+		const onClientData = ( clientSocket, data ) =>
+		{
+			const dataString  = data.toString ();
+			const dataArray   = dataString.split ('\t');
+			const packetType  = parseInt (dataArray[0]);
+			const packetError = parseInt (dataArray[1]);
+
+			if ( packetType === pxObject.getCommandCode ('SV_AUTH_RESPONSE') )
+			{
+				clientSocket.write ('200\tbbbbb\t555\r\n');
+			}
+			else
+			{
+				expect (packetType).to.equal (pxObject.getCommandCode ('CL_ERROR'));
+				expect (packetError).to.equal (pxObject.getErrorCode ('CL_UNK_PACKET_TYPE'));
+
+				return true;
+			}
+		};
+
+		const onSocketConnected = clientSocket =>
+		{
+			const command = pxObject.getCommandCode ('CL_AUTH_INFO');
+			const name    = 'App';
+			const version = 1;
+			const login   = 'l';
+
+			clientSocket.write (`${[command, name, version, PXSYS_VERSION, login].join ('\t')}\r\n`);
+		};
+
+		serverTest (done, onSocketConnected, onClientData);
+	});
 });
