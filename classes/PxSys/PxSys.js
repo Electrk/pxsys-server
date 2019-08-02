@@ -1,10 +1,10 @@
 const rfr = require ('rfr');
 
-const PxSysScreen        = rfr ('classes/PxSysScreen.js');
-const EnumBag            = rfr ('classes/EnumBag.js');
+const PxSysScreen = rfr ('classes/PxSysScreen.js');
+const EnumBag     = rfr ('classes/EnumBag.js');
 
-const defaultCommandCodes   = require ('./defaultCommandCodes.js');
-const defaultErrorCodes     = require ('./defaultErrorCodes.js');
+const defaultCommandCodes = require ('./defaultCommandCodes.js');
+const defaultErrorCodes   = require ('./defaultErrorCodes.js');
 
 const { requiredArgsAssert } = rfr ('utility/miscellaneous.js');
 const { instanceOfAssert }   = rfr ('utility/typeAssert.js');
