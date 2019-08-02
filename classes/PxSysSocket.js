@@ -40,8 +40,6 @@ class PxSysSocket
 
 	on ( event, listener )
 	{
-		const pxSocket = this;
-
 		const onEvent = function ( ...args )
 		{
 			listener (...args);
