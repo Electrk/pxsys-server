@@ -28,7 +28,7 @@ module.exports = PxSys =>
 		const onServerEnd = function ( hadError )
 		{
 			onEnd (hadError);
-			logger.log ('TCP server closed.');
+			logger.log ('TCP server closed' + (hadError ? ' with error!' : '.'));
 		};
 
 		const server = new PxSysServer (port, address, onServerStart, onServerEnd);
