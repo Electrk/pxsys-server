@@ -7,6 +7,7 @@ const { expect }         = require ('chai');
 const PxSys         = rfr ('classes/PxSys/PxSys.js');
 const PxSysColorset = rfr ('classes/PxSysColorset.js');
 const PxSysScreen   = rfr ('classes/PxSysScreen.js');
+const PxSysSocket   = rfr ('classes/PxSysSocket.js');
 
 const { PXSYS_VERSION } = rfr ('miscellaneous/constants.js');
 
@@ -169,5 +170,104 @@ describe ('PxSys - onData', function ()
 		};
 
 		serverTest (done, onSocketConnected, onClientData);
+	});
+
+	it (`custom packet handlers should work properly`, function ( done )
+	{
+		let handler1Done = false;
+		let handler2Done = false;
+		let handler3Done = false;
+
+		const onSocketConnected = clientSocket =>
+		{
+			const customHandler1 = ( pxSocket, dataArray ) =>
+			{
+				expect (pxSocket).to.be.an.instanceof (PxSysSocket);
+				expect (dataArray[0]).to.equal ('yeee');
+				expect (dataArray.length).to.equal (1);
+
+				handler1Done = true;
+
+				if ( handler1Done  &&  handler2Done  &&  handler3Done )
+				{
+					pxObject.destroyServer ();
+					clientSocket.end ();
+
+					done ();
+				}
+			};
+
+			const customHandler2 = ( pxSocket, dataArray ) =>
+			{
+				expect (pxSocket).to.be.an.instanceof (PxSysSocket);
+				expect (parseFloat (dataArray[0])).to.equal (1.21);
+				expect (parseInt (dataArray[1])).to.equal (-500000);
+				expect (dataArray.length).to.equal (2);
+
+				handler2Done = true;
+
+				if ( handler1Done  &&  handler2Done  &&  handler3Done )
+				{
+					pxObject.destroyServer ();
+					clientSocket.end ();
+
+					done ();
+				}
+			};
+
+			const customHandler3 = ( pxSocket, dataArray ) =>
+			{
+				
+				expect (pxSocket).to.be.an.instanceof (PxSysSocket);
+				expect (parseInt (dataArray[0])).to.equal (1234);
+				expect (parseFloat (dataArray[1])).to.equal (-.023);
+				expect (dataArray[2]).to.equal (':)');
+				expect (dataArray.length).to.equal (3);
+
+				handler3Done = true;
+
+				if ( handler1Done  &&  handler2Done  &&  handler3Done )
+				{
+					pxObject.destroyServer ();
+					clientSocket.end ();
+
+					done ();
+				}
+			};
+
+			pxObject.addPacketHandler ('CL_DO_SOMETHING', customHandler1);
+			pxObject.addPacketHandler ('CL_DO_ANOTHER', customHandler2);
+			pxObject.addPacketHandler ('CL_DO_ONE_MORE', customHandler3);
+
+			const command = pxObject.getCommandCode ('CL_AUTH_INFO');
+			const name    = 'App';
+			const version = 1;
+			const login   = 'l';
+
+			clientSocket.write (`${[command, name, version, PXSYS_VERSION, login].join ('\t')}\r\n`);
+
+			setTimeout (() =>
+			{
+				const customCmd = pxObject.getCommandCode ('CL_DO_SOMETHING');
+
+				clientSocket.write (`${[customCmd, 'yeee'].join ('\t')}\r\n`);
+			}, 20);
+
+			setTimeout (() =>
+			{
+				const customCmd = pxObject.getCommandCode ('CL_DO_ANOTHER');
+
+				clientSocket.write (`${[customCmd, 1.21, -500000].join ('\t')}\r\n`);
+			}, 40);
+
+			setTimeout (() =>
+			{
+				const customCmd = pxObject.getCommandCode ('CL_DO_ONE_MORE');
+
+				clientSocket.write (`${[customCmd, 1234, -.023, ':)'].join ('\t')}\r\n`);
+			}, 60);
+		};
+
+		serverTest (done, onSocketConnected);
 	});
 });
