@@ -21,10 +21,8 @@ class PxSys
 
 		this.isDeleted = false;
 
-		this._server        = null;
-		this._screen        = screen;
-		this._socketManager = new PxSysSocketManager ();
-
+		this._server       = null;
+		this._screen       = screen;
 		this._commandCodes = new EnumBag (...defaultCommandCodes);
 		this._errorCodes   = new EnumBag (...defaultErrorCodes);
 	}
@@ -37,6 +35,9 @@ class PxSys
 		}
 
 		this._screen.delete ();
+		this._server.delete (onServerClose);
+
+		this._server = null;
 
 		delete this._screen;
 		delete this._commandCodes;
@@ -84,7 +85,19 @@ class PxSys
 	{
 		return this._errorCodes.getName (code);
 	}
+
+	onServer ( event, callback )
+	{
+		return this._server.on (event, callback);
+	}
+
+	offServer ( event, callback )
+	{
+		return this._server.off (event, callback);
+	}
 }
+
+require ('./createDestroyServer.js')(PxSys);
 
 
 module.exports = PxSys;
