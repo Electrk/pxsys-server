@@ -25,6 +25,8 @@ module.exports = ( PxSys ) =>
 			handlerSet.add (boundCallback);
 		}
 
+		this.addCommand (packetType);
+
 		return boundCallback;
 	};
 
