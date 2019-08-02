@@ -38,7 +38,7 @@ const stringTypeAssert = function ( value, valueName = 'Value', message )
 	message = defaultMessage (message, valueName, 'a string!');
 	check   = typeof value === 'string';
 
-	assert.strictEqual (check, message);
+	assert.ok (check, message);
 };
 
 const objectTypeAssert = function ( value, valueName = 'Value', message )
