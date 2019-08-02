@@ -21,9 +21,6 @@ const defaultErrorCodes =
 	// You're not the admin, dummy
 	'CL_NOT_ADMIN',
 
-	// Color ID is out of range
-	'CL_BAD_COLOR_ID',
-
 	/* SV_ is for errors on the server side */
 
 	// TODO

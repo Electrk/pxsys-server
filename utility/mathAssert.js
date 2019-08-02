@@ -1,23 +1,18 @@
 const assert = require ('assert');
+const rfr    = require ('rfr');
+
+const { defaultValue } = rfr ('utility/miscellaneous.js');
 
 
-const minAssert = ( value, min, valueName = 'Value', message = null ) =>
+const minAssert = ( value, min, valueName = 'Value', message ) =>
 {
-	if ( message === null )
-	{
-		message = `${valueName} must be greater than or equal to ${min}`;
-	}
-
+	message = defaultValue (message, `${valueName} must be greater than or equal to ${min}`);
 	assert.ok (value >= min, message);
 }
 
-const maxAssert = ( value, max, valueName = 'Value', message = null ) =>
+const maxAssert = ( value, max, valueName = 'Value', message ) =>
 {
-	if ( message === null )
-	{
-		message = `${valueName} must be less than or equal to ${max}`;
-	}
-
+	message = defaultValue (message, `${valueName} must be less than or equal to ${max}`);
 	assert.ok (value <= max, message);
 }
 

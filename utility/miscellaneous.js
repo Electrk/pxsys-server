@@ -1,5 +1,5 @@
 const assert = require ('assert');
-const has    = require ('has-own-property-x');
+const has    = require ('has');
 
 const { clampAssert } = require ('./mathAssert.js');
 
@@ -34,6 +34,21 @@ const requiredArgsAssert = ( argsObj = {}, functionName = null ) =>
 	}
 };
 
+const defaultValue = ( value, defaultValue, testNaN = false ) =>
+{
+	if ( value === null  ||  typeof value === 'undefined' )
+	{
+		return defaultValue;
+	}
+
+	if ( testNaN  &&  isNaN (value) )
+	{
+		return defaultValue;
+	}
+
+	return value;
+};
+
 const pixelCoordsAssert = ( x, y, width, height ) =>
 {
 	clampAssert (x, 0, width - 1, 'x');
@@ -41,4 +56,4 @@ const pixelCoordsAssert = ( x, y, width, height ) =>
 };
 
 
-module.exports = { hasMulti, requiredArgsAssert, pixelCoordsAssert };
+module.exports = { hasMulti, requiredArgsAssert, defaultValue, pixelCoordsAssert };

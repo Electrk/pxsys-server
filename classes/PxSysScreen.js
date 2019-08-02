@@ -60,7 +60,6 @@ class PxSysScreen
 	getPixel ( x, y )
 	{
 		pixelCoordsAssert (x, y, this.width, this.height);
-
 		return cloneDeep (this._videoMemory[x][y]);
 	}
 
@@ -90,7 +89,7 @@ class PxSysScreen
 
 	getChangedPixels ()
 	{
-		return cloneDeep (this._changedPixels);
+		return this._changedPixels;
 	}
 
 	clearChangedPixels ()

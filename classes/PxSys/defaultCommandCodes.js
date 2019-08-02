@@ -24,8 +24,8 @@ const defaultCommandCodes =
 	// When the server sends the colorset data
 	'SV_COLORSET',
 
-	// Setting pixel colors
-	'SV_PIXEL_COLOR',
+	// Setting pixel data
+	'SV_PIXEL_DATA',
 
 	/* CS_ is for commands shared by both */
 
