@@ -87,6 +87,14 @@ class PxSysServer
 		}
 	}
 
+	forEach ( callback )
+	{
+		for ( let socket = this._sockets )
+		{
+			callback (socket);
+		}
+	}
+
 	on ( event, callback )
 	{
 		return this._server.on (event, callback);
