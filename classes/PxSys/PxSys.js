@@ -106,22 +106,22 @@ class PxSys
 
 	sendSocketCommandToAll ( command, ...args )
 	{
-		if ( typeof command === 'string' )
-		{
-			command = this.getCommandCode (command);
-		}
+		const pxObject = this;
 
-		this._server.sendCommandToAll (command, ...args);
+		this._server.forEach (socket =>
+		{
+			pxObject.sendSocketCommand (socket, command ...args);
+		});
 	}
 
 	sendSocketErrorToAll ( errorCommand, errorCode, errorMessage )
 	{
-		if ( typeof errorCode === 'string' )
-		{
-			errorCode = this.getErrorCode (errorCode);
-		}
+		const pxObject = this;
 
-		this.sendSocketCommandToAll (errorCommand, errorCode, errorMessage);
+		this._server.forEach (socket =>
+		{
+			pxObject.sendSocketError (socket, errorCommand, errorMessage);
+		});
 	}
 
 	onServer ( event, callback )
