@@ -37,6 +37,7 @@ module.exports = PxSys =>
 		{
 			server.addSocket (socket);
 			socket.on ('close', () => server.removeSocket (socket));
+			socket.on ('error', error => logger.log (`Socket error: ${error}`));
 
 			logger.log (`New connection: ${socket.remoteAddress}:${socket.remotePort}`);
 		});
