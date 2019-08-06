@@ -15,10 +15,10 @@ const defaultErrorCodes =
 	// Unknown packet type
 	'CL_UNK_PACKET_TYPE',
 
-	// You have not authenticated with the server yet
+	// You have not authenticated with the server yet (TODO)
 	'CL_NOT_AUTHED',
 
-	// You're not the admin, dummy
+	// You're not the admin, dummy (TODO)
 	'CL_NOT_ADMIN',
 
 	/* SV_ is for errors on the server side */

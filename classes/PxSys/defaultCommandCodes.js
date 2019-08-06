@@ -6,10 +6,10 @@ const defaultCommandCodes =
 
 	/* CL_ is for commands sent from client to server */
 
-	// When a client sends login/auth credentials
+	// When a client sends login/auth credentials (TODO)
 	'CL_AUTH_INFO',
 
-	/* SV_ is for commands sent from server to client */
+	/* SV_ is for commands sent from server to client (TODO) */
 
 	// The server's authentication response:
 	//
@@ -21,15 +21,16 @@ const defaultCommandCodes =
 
 	'SV_AUTH_RESPONSE',
 
-	// When the server sends the colorset data
+	// When the server sends the colorset data (TODO)
 	'SV_COLORSET',
 
 	// Setting pixel data
+	//   x y key value
 	'SV_PIXEL_DATA',
 
 	/* CS_ is for commands shared by both */
 
-	// TODO
+	// TODO?
 ];
 
 
