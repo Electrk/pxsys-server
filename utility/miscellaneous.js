@@ -1,8 +1,6 @@
 const assert = require ('assert');
 const has    = require ('has');
 
-const { clampAssert } = require ('./mathAssert.js');
-
 
 const hasMulti = ( obj, ...properties ) =>
 {
