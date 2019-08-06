@@ -89,7 +89,7 @@ class PxSysServer
 
 	forEach ( callback )
 	{
-		for ( let socket = this._sockets )
+		for ( let socket of this._sockets )
 		{
 			callback (socket);
 		}
