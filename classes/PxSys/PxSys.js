@@ -84,6 +84,46 @@ class PxSys
 		return this._errorCodes.getName (code);
 	}
 
+	sendSocketCommand ( socket, command, ...args )
+	{
+		if ( typeof command === 'string' )
+		{
+			command = this.getCommandCode (command);
+		}
+
+		this._server.sendCommand (socket, command, ...args);
+	}
+
+	sendSocketError ( socket, errorCommand, errorCode, errorMessage )
+	{
+		if ( typeof errorCode === 'string' )
+		{
+			errorCode = this.getErrorCode (errorCode);
+		}
+
+		this.sendSocketCommand (socket, errorCommand, errorCode, errorMessage);
+	}
+
+	sendSocketCommandToAll ( command, ...args )
+	{
+		if ( typeof command === 'string' )
+		{
+			command = this.getCommandCode (command);
+		}
+
+		this._server.sendCommandToAll (command, ...args);
+	}
+
+	sendSocketErrorToAll ( errorCommand, errorCode, errorMessage )
+	{
+		if ( typeof errorCode === 'string' )
+		{
+			errorCode = this.getErrorCode (errorCode);
+		}
+
+		this.sendSocketCommandToAll (errorCommand, errorCode, errorMessage);
+	}
+
 	onServer ( event, callback )
 	{
 		return this._server.on (event, callback);
@@ -96,6 +136,7 @@ class PxSys
 }
 
 require ('./createDestroyServer.js')(PxSys);
+require ('./screenData.js')(PxSys);
 
 
 module.exports = PxSys;
