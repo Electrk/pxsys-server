@@ -6,6 +6,20 @@ const logger      = rfr ('utility/logger.js');
 
 module.exports = PxSys =>
 {
+	PxSys.prototype.sendScreenData = function ( socket = null )
+	{
+		const screen = this._screen;
+
+		if ( socket === null )
+		{
+			this.sendSocketCommandToAll ('SV_SCREEN_SIZE', screen.width, screen.height);
+		}
+		else
+		{
+			this.sendSocketCommand (socket, 'SV_SCREEN_SIZE', screen.width, screen.height);
+		}
+	}
+
 	PxSys.prototype.setScreenPixel = function ( x, y, key, value )
 	{
 		this._screen.setPixel (x, y, key, value);
