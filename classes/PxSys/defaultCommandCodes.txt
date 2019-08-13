@@ -1,0 +1,35 @@
+CL_ is for commands sent from client to server
+SV_ is for commands sent from server to client (TODO)
+CS_ is for commands shared by both
+
+-------------------------------------------------
+
+CL_ERROR
+SV_ERROR
+CS_ERROR
+
+-------------------------------------------------
+
+CL_AUTH_INFO:
+	When a client sends auth credentials
+
+-------------------------------------------------
+
+SV_SCREEN_SIZE: <width height>
+
+SV_AUTH_RESPONSE:
+	The servers authentication response:
+
+	  If successful:
+	    <SUCCESS (1) ISADMIN (0 or 1)>
+
+	  If unsuccessful:
+	    <FAILURE (0) ERRORLIST (ERRORCODE ERRORMESSAGE, ERRORCODE ERRORMESSAGE, ...)
+
+SV_COLORSET:
+	When the server sends the colorset data (TODO)
+   
+SV_PIXEL_DATA:
+	Setting pixel data: <x y key value>
+
+-------------------------------------------------

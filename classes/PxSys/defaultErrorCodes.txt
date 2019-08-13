@@ -1,0 +1,28 @@
+CL_ is for commands sent from client to server
+SV_ is for commands sent from server to client (TODO)
+CS_ is for commands shared by both
+
+-------------------------------------------------
+
+CL_GENERIC
+SV_GENERIC
+CS_GENERIC
+
+-------------------------------------------------
+
+CL_MALFORMED_PACKET:
+	The packet you have sent was malformed
+
+CL_MALFORMED_DATA:
+	The data you have sent was malformed
+
+CL_UNK_PACKET_TYPE:
+	Unknown packet type
+
+CL_NOT_AUTHED:
+	You have not authenticated with the server yet (TODO)
+
+CL_NOT_ADMIN:
+	You're not the admin, dummy (TODO)
+
+-------------------------------------------------
