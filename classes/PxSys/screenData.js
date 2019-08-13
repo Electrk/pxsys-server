@@ -11,7 +11,7 @@ module.exports = PxSys =>
 		this._screen.setPixel (x, y, key, value);
 	};
 
-	PxSys.prototype.sendScreenData = function ( socket = null )
+	PxSys.prototype.sendPixelData = function ( socket = null )
 	{
 		const changed = this._screen.getChangedPixels ();
 		const length  = changed.length;
