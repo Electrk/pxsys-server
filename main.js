@@ -1,5 +1,8 @@
-const rfr = require ('rfr');
-const has = require ('has');
+const path = require ('path');
+const rfr  = require ('rfr');
+const has  = require ('has');
+
+rfr.setRoot (path.resolve (__dirname, './'));
 
 const PxSys       = rfr ('classes/PxSys/PxSys.js');
 const PxSysScreen = rfr ('classes/PxSysScreen.js');
