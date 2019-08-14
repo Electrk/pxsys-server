@@ -17,6 +17,8 @@ class PxSys
 
 		this._server = null;
 		this._screen = screen;
+
+		this._packetHandlers = new Map ();
 	}
 
 	delete ( onServerClose )
@@ -29,9 +31,17 @@ class PxSys
 		this._screen.delete ();
 		this._server.delete (onServerClose);
 
+		for ( let [packetType, handlerSet] of this._packetHandlers )
+		{
+			handlerSet.clear ();
+		}
+
+		this._packetHandlers.clear ();
+
 		this._server = null;
 
 		delete this._screen;
+		delete this._packetHandlers;
 
 		this.isDeleted = true;
 	}
@@ -75,9 +85,20 @@ class PxSys
 	{
 		return this._server.off (event, callback);
 	}
+
+	onSocket ( socket, event, callback )
+	{
+		return socket.on (event, callback.bind (this));
+	}
+
+	offSocket ( socket, event, callback )
+	{
+		return socket.off (event, callback);
+	}
 }
 
 require ('./createDestroyServer.js')(PxSys);
+require ('./handleSockets.js')(PxSys);
 require ('./screenData.js')(PxSys);
 
 
