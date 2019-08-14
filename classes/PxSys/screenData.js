@@ -1,23 +1,31 @@
 const rfr = require ('rfr');
-const { requiredArgsAssert } = rfr ('utility/miscellaneous.js');
+
+const PxSysServer = rfr ('classes/PxSysServer.js');
+const logger      = rfr ('utility/logger.js');
 
 
-module.exports = ( PxSys ) =>
+module.exports = PxSys =>
 {
-	PxSys.prototype.addScreenField = function ( fieldName, defaultValue, commandString )
+	PxSys.prototype.sendScreenData = function ( socket = null )
 	{
-		requiredArgsAssert ({ fieldName, defaultValue, commandString });
+		const screen = this._screen;
 
-		this.addCommand (commandString);
-		this._screenFields[fieldName] = { defaultValue, commandString };
+		if ( socket === null )
+		{
+			this.sendSocketCommandToAll ('SV_SCREEN_SIZE', screen.width, screen.height);
+		}
+		else
+		{
+			this.sendSocketCommand (socket, 'SV_SCREEN_SIZE', screen.width, screen.height);
+		}
+	}
+
+	PxSys.prototype.setScreenPixel = function ( x, y, key, value )
+	{
+		this._screen.setPixel (x, y, key, value);
 	};
 
-	PxSys.prototype.getFieldCommandString = function ( fieldName )
-	{
-		return this._screenFields[fieldName].commandString;
-	};
-
-	PxSys.prototype.sendScreenData = function ()
+	PxSys.prototype.sendPixelData = function ( socket = null )
 	{
 		const changed = this._screen.getChangedPixels ();
 		const length  = changed.length;
@@ -27,10 +35,17 @@ module.exports = ( PxSys ) =>
 			let pixel = changed[i];
 			let x     = pixel[0];
 			let y     = pixel[1];
-			let field = pixel[2];
+			let key   = pixel[2];
 			let value = pixel[3];
 
-			this.sendCommandToAll (this.getFieldCommandString (field), x, y, value);
+			if ( socket === null )
+			{
+				this.sendSocketCommandToAll ('SV_PIXEL_DATA', x, y, key, value);
+			}
+			else
+			{
+				this.sendSocketCommand (socket, 'SV_PIXEL_DATA', x, y, key, value);
+			}
 		}
 
 		this._screen.clearChangedPixels ();

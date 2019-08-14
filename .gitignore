@@ -63,3 +63,6 @@ typings/
 # Sublime Text files
 *.sublime-project
 *.sublime-workspace
+
+# Temporary test file
+./test.js

@@ -1,23 +1,16 @@
 const net = require ('net');
 const rfr = require ('rfr');
 
+const logger = rfr ('utility/logger.js');
+
 const { requiredArgsAssert } = rfr ('utility/miscellaneous.js');
-const { notNullAssert }      = rfr ('utility/typeAssert.js');
+const { instanceOfAssert }   = rfr ('utility/typeAssert.js');
 
 
 class PxSysServer
 {
-	constructor ( config = {} )
+	constructor ( port, address, onServerStart = () => {}, onServerEnd = () => {} )
 	{
-		const
-		{ 
-			port,
-			address,
-
-			onServerStart = function () {},
-			onServerEnd   = function () {},
-		} = config;
-
 		requiredArgsAssert ({ port, address });
 
 		const server = net.createServer ();
@@ -26,6 +19,7 @@ class PxSysServer
 		this.port      = port;
 		this.address   = address;
 
+		this._sockets = new Set ();
 		this._onEnd   = onServerEnd;
 		this._server  = server.listen (port, address, onServerStart);
 	}
@@ -37,35 +31,87 @@ class PxSysServer
 			return;
 		}
 
-		const closeCallback = function ( ...args )
+		for ( let socket of this._sockets )
 		{
-			callback (...args);
+			socket.end (() => socket.destroy ());
+		}
+
+		const closeCallback = function ()
+		{
+			callback ();
+			this._onEnd ();
+
+			this._sockets.clear ();
+			this._server.unref ();
 
 			delete this.port;
 			delete this.address;
+			delete this._sockets;
 			delete this._onEnd;
 			delete this._server;
 
 			this.isDeleted = true;
 		};
 
-		this._close (closeCallback.bind (this));
+		this._server.close (closeCallback.bind (this));
+	}
+
+	addSocket ( socket )
+	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
+		instanceOfAssert (socket, net.Socket, 'socket');
+		this._sockets.add (socket);
+	}
+
+	removeSocket ( socket )
+	{
+		if ( !this.isDeleted )
+		{
+			this._sockets.delete (socket);
+		}
+	}
+
+	sendCommand ( socket, command, ...args )
+	{
+		if ( !this.isDeleted )
+		{
+			socket.write (`${command}\t${args.join ('\t')}\r\n`);
+		}
+	}
+
+	sendCommandToAll ( command, ...args )
+	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
+		for ( let socket of this._sockets )
+		{
+			this.sendCommand (socket, command, ...args);
+		}
+	}
+
+	forEach ( callback )
+	{
+		for ( let socket of this._sockets )
+		{
+			callback (socket);
+		}
 	}
 
 	on ( event, callback )
 	{
-		this._server.on (event, callback);
+		return this._server.on (event, callback);
 	}
 
-	_close ( callback )
+	off ( event, callback )
 	{
-		const closeCallback = function ( ...args )
-		{
-			this._onEnd (...args);
-			callback (...args);
-		};
-
-		this._server.close (closeCallback.bind (this));
+		return this._server.off (event, callback);
 	}
 }
 

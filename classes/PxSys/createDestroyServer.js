@@ -1,111 +1,60 @@
 const rfr = require ('rfr');
 
-const PxSysServer     = rfr ('classes/PxSysServer.js');
-const PxSysServerInfo = rfr ('classes/PxSysServerInfo/PxSysServerInfo.js');
-
-const { notNullAssert } = rfr ('utility/typeAssert.js');
+const PxSysServer = rfr ('classes/PxSysServer.js');
+const logger      = rfr ('utility/logger.js');
 
 
-module.exports = ( PxSys ) =>
+module.exports = PxSys =>
 {
-	PxSys.prototype.setServerInfo = function ( info )
-	{
-		if ( this.isDeleted  ||  this._serverInfo !== null )
-		{
-			return;
-		}
-
-		this._serverInfo = new PxSysServerInfo (info);
-	};
-
-	PxSys.prototype.createServer = function ( config = {} )
+	PxSys.prototype.createServer = function ( port = 23, address = '127.0.0.1', callbacks = {} )
 	{
 		if ( this.isDeleted  ||  this._server !== null )
 		{
 			return;
 		}
 
-		const errorMsg = 'Failure!  Please set the server info before attempting to create a server.';
-		notNullAssert (this._serverInfo, '', errorMsg);
-
 		const
-		{ 
-			port    = 23,
-			address = '127.0.0.1', 
-
-			onStart         = function () {},
-			onEnd           = function () {},
-			onConnection    = function () {},
-			onDisconnection = function () {},
-		} = config;
-
-
-		const onServerStart = function ( ...args )
 		{
-			this.log (`Server created on ${address}:${port}`);
-			onStart (...args);
+			onStart = function () {},
+			onEnd   = function () {},
+		} = callbacks;
+
+		const onServerStart = function ( socket )
+		{
+			onStart (socket);
+			logger.log (`TCP server started on ${address}:${port}`);
 		};
 
-		const onServerEnd = function ( ...args )
+		const onServerEnd = function ( hadError )
 		{
-			this.log ('Server was shut down.');
-			onEnd (...args);
+			onEnd (hadError);
+			logger.log ('TCP server closed' + (hadError ? ' with error!' : '.'));
 		};
 
-		const onNewConnection = function ( socket )
+		const server   = new PxSysServer (port, address, onServerStart, onServerEnd);
+		const pxObject = this;
+
+		server.on ('connection', socket =>
 		{
-			const pxObject = this;
-			const pxSocket = this._socketManager.addSocket (socket);
-			const onData   = this._onData.bind (this);
+			pxObject._onConnection (socket, server);
+		});
 
-			pxSocket.on ('data', function ( data )
-			{
-				onData (pxSocket, data);
-			});
-
-			pxSocket.on ('close', function ( hadError )
-			{
-				pxObject.log (`Disconnected: ${socket.remoteAddress}:${socket.remotePort}`);
-				onDisconnection (hadError);
-			});
-
-			pxSocket.on ('error', function ( socketError )
-			{
-				pxObject.error (`Socket Error: ${socketError}`);
-			});
-
-			this.log (`New connection: ${socket.remoteAddress}:${socket.remotePort}`);
-			onConnection (socket, pxSocket);
-		};
-
-		const onError = function ( serverError )
+		server.on ('error', serverError =>
 		{
-			this.error (`Server Error: ${serverError}`);
-		};
-
-		const serverArgs =
-		{
-			port,
-			address,
-
-			onServerStart: onServerStart.bind (this),
-			onServerEnd:   onServerEnd.bind (this),
-		};
-
-		const server = new PxSysServer (serverArgs);
-
-		server.on ('connection', onNewConnection.bind (this));
-		server.on ('error', onError.bind (this));
+			logger.error (`Server Error: ${serverError}`);
+		});
 
 		this._server = server;
 	};
 
 	PxSys.prototype.destroyServer = function ( callback )
 	{
-		if ( !this.isDeleted  &&  this._server !== null )
+		if ( this.isDeleted  ||  this._server === null )
 		{
-			this._server.delete (callback);
-			this._server = null;
+			return;
 		}
+
+		this._server.delete (callback);
+		this._server = null;
 	};
 };

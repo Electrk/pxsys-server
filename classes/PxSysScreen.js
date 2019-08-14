@@ -2,15 +2,15 @@ const rfr       = require ('rfr');
 const cloneDeep = require ('clone-deep');
 const deepEqual = require ('deep-equal');
 
-const { pixelCoordsAssert, requiredArgsAssert } = rfr ('utility/miscellaneous.js');
-const { stringTypeAssert } = rfr ('utility/typeAssert.js');
+const { requiredArgsAssert } = rfr ('utility/miscellaneous.js');
+const { stringTypeAssert }   = rfr ('utility/typeAssert.js');
+const { clampAssert }        = rfr ('utility/mathAssert.js');
 
 
 class PxSysScreen
 {
-	constructor ( config = {} )
+	constructor ( width, height, defaultValues )
 	{
-		const { width, height, defaultValues } = config;
 		requiredArgsAssert ({ width, height, defaultValues });
 
 		const videoMemory = [];
@@ -59,14 +59,14 @@ class PxSysScreen
 
 	getPixel ( x, y )
 	{
-		pixelCoordsAssert (x, y, this.width, this.height);
-
 		return cloneDeep (this._videoMemory[x][y]);
 	}
 
 	setPixel ( x, y, key, value )
 	{
-		pixelCoordsAssert (x, y, this.width, this.height);
+		clampAssert (x, 0, this.width - 1, 'x');
+		clampAssert (y, 0, this.height - 1, 'y');
+
 		stringTypeAssert (key, 'key');
 
 		const currentValues = this._videoMemory[x][y];
@@ -82,7 +82,7 @@ class PxSysScreen
 	{
 		this.clearChangedPixels ();
 
-		this.forEach (( x, y, pixel ) =>
+		this.forEach (( pixel, x, y ) =>
 		{
 			this._videoMemory[x][y] = cloneDeep (this._defaultValues);
 		});
@@ -90,7 +90,7 @@ class PxSysScreen
 
 	getChangedPixels ()
 	{
-		return cloneDeep (this._changedPixels);
+		return this._changedPixels;
 	}
 
 	clearChangedPixels ()
@@ -108,7 +108,7 @@ class PxSysScreen
 		{
 			for ( let y = 0;  y < height;  y++ )
 			{
-				callback (x, y, videoMemory[x][y]);
+				callback (videoMemory[x][y], x, y);
 			}
 		}
 	}

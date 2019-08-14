@@ -1,50 +1,76 @@
 const assert = require ('assert');
+const rfr    = require ('rfr');
+
+const { defaultValue } = rfr ('utility/miscellaneous.js');
 
 
-const instanceOfAssert = ( instance, classObj, valueName = 'Object', message = null ) =>
+const defaultMessage = function ( message, valueName = 'Value', defaultMessageEnd )
 {
-	if ( message === null )
-	{
-		message = `${valueName} must be an instance of the ${classObj.name} class!`;
-	}
+	return defaultValue (message, `${valueName} must be ${defaultMessageEnd}`);
+};
 
-	assert.ok (instance instanceof classObj, message);
+const instanceOfAssert = function ( instance, classObj, valueName = 'Object', message )
+{
+	message = defaultMessage (message, valueName, `an instance of ${classObj.name}!`);
+	check   = instance instanceof classObj;
+
+	assert.ok (check, message);
 }
 
-const integerTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be an integer!` ) =>
+const integerTypeAssert = function ( value, valueName = 'Value', message )
 {
-	assert.ok (Number.isInteger (value), message);
+	message = defaultMessage (message, valueName, 'an integer!');
+	check   = Number.isInteger (value);
+
+	assert.ok (check, message);
 };
 
-const numberTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be a number!` ) =>
+const numberTypeAssert = function ( value, valueName = 'Value', message )
 {
-	assert.strictEqual (typeof value, 'number', message);
-	assert.ok (!isNaN (value), message);
+	message = defaultMessage (message, valueName, 'a number!');
+	check   = typeof value === 'number'  &&  !isNaN (value);
+
+	assert.ok (check, message);
 };
 
-const stringTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be a string!` ) =>
+const stringTypeAssert = function ( value, valueName = 'Value', message )
 {
-	assert.strictEqual (typeof value, 'string', message);
+	message = defaultMessage (message, valueName, 'a string!');
+	check   = typeof value === 'string';
+
+	assert.ok (check, message);
 };
 
-const objectTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be a non-array object!` ) =>
+const objectTypeAssert = function ( value, valueName = 'Value', message )
 {
-	assert.ok (typeof value === 'object'  &&  !Array.isArray (value), message);
+	message = defaultMessage (message, valueName, 'a non-array object!');
+	check   = typeof value === 'object'  &&  !Array.isArray (value);
+
+	assert.ok (check, message);
 };
 
-const arrayTypeAssert = ( value, valueName = 'Value', message = `${valueName} must be an array!` ) =>
+const arrayTypeAssert = function ( value, valueName = 'Value', message )
 {
-	assert.ok (Array.isArray (value), message);
+	message = defaultMessage (message, valueName, 'an array!');
+	check   = Array.isArray (value);
+
+	assert.ok (check, message);
 };
 
-const functionTypeAssert  = ( value, valueName = 'Value', message = `${valueName} must be a function!` ) =>
+const functionTypeAssert = function ( value, valueName = 'Value', message )
 {
-	assert.strictEqual (typeof value, 'function', message);
+	message = defaultMessage (message, valueName, 'a function!');
+	check   = typeof value === 'function';
+
+	assert.ok (check, message);
 }
 
-const notNullAssert = ( value, valueName = 'Value', message = `${valueName} is null!` ) =>
+const notNullAssert = function ( value, valueName = 'Value', message )
 {
-	assert.notStrictEqual (value, null, message);
+	message = defaultValue (message, `${valueName} is null!`);
+	check   = value !== null;
+
+	assert.ok (check, message);
 };
 
 
