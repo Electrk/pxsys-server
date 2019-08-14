@@ -2,9 +2,9 @@
   "name": "pxsys-server",
   "version": "0.1.0",
   "description": "",
-  "main": "dist/main.js",
+  "main": "./main.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --recursive test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
