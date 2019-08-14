@@ -31,15 +31,12 @@ module.exports = PxSys =>
 			logger.log ('TCP server closed' + (hadError ? ' with error!' : '.'));
 		};
 
-		const server = new PxSysServer (port, address, onServerStart, onServerEnd);
+		const server   = new PxSysServer (port, address, onServerStart, onServerEnd);
+		const pxObject = this;
 
 		server.on ('connection', socket =>
 		{
-			server.addSocket (socket);
-			socket.on ('close', () => server.removeSocket (socket));
-			socket.on ('error', error => logger.log (`Socket error: ${error}`));
-
-			logger.log (`New connection: ${socket.remoteAddress}:${socket.remotePort}`);
+			pxObject._onConnection (socket, server);
 		});
 
 		server.on ('error', serverError =>
