@@ -31,17 +31,18 @@ class PxSysServer
 			return;
 		}
 
+		for ( let socket of this._sockets )
+		{
+			socket.end (() => socket.destroy ());
+		}
+
 		const closeCallback = function ()
 		{
 			callback ();
 			this._onEnd ();
 
-			for ( let socket of this._sockets )
-			{
-				socket.end ();
-			}
-
 			this._sockets.clear ();
+			this._server.unref ();
 
 			delete this.port;
 			delete this.address;
@@ -57,13 +58,21 @@ class PxSysServer
 
 	addSocket ( socket )
 	{
+		if ( this.isDeleted )
+		{
+			return;
+		}
+
 		instanceOfAssert (socket, net.Socket, 'socket');
 		this._sockets.add (socket);
 	}
 
 	removeSocket ( socket )
 	{
-		this._sockets.delete (socket);
+		if ( !this.isDeleted )
+		{
+			this._sockets.delete (socket);
+		}
 	}
 
 	sendCommand ( socket, command, ...args )
