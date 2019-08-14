@@ -8,6 +8,7 @@ const PxSysScreen = rfr ('classes/PxSysScreen.js');
 module.exports =
 {
 	PxSys,
+	PxSysScreen,
 
 	createPxSys ( width, height, defaultValues = {} )
 	{
