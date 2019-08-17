@@ -51,9 +51,9 @@ class PxSys
 		this._server.sendCommand (socket, command, ...args);
 	}
 
-	sendSocketError ( socket, errorCommand, errorCode, errorMessage )
+	sendSocketError ( socket, errorCommand, errorCode, errorMessage, data )
 	{
-		this.sendSocketCommand (socket, errorCommand, errorCode, errorMessage);
+		this.sendSocketCommand (socket, errorCommand, errorCode, errorMessage, data);
 	}
 
 	sendSocketCommandToAll ( command, ...args )
@@ -66,13 +66,13 @@ class PxSys
 		});
 	}
 
-	sendSocketErrorToAll ( errorCommand, errorCode, errorMessage )
+	sendSocketErrorToAll ( errorCommand, errorCode, errorMessage, data )
 	{
 		const pxObject = this;
 
 		this._server.forEach (socket =>
 		{
-			pxObject.sendSocketError (socket, errorCommand, errorMessage);
+			pxObject.sendSocketError (socket, errorCommand, errorMessage, data);
 		});
 	}
 
@@ -84,16 +84,6 @@ class PxSys
 	offServer ( event, callback )
 	{
 		return this._server.off (event, callback);
-	}
-
-	onSocket ( socket, event, callback )
-	{
-		return socket.on (event, callback.bind (this));
-	}
-
-	offSocket ( socket, event, callback )
-	{
-		return socket.off (event, callback);
 	}
 }
 

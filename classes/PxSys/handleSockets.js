@@ -8,17 +8,17 @@ module.exports = PxSys =>
 	{
 		server.addSocket (socket);
 
-		this.onSocket (socket, 'close', function ()
+		this._onSocket (socket, 'close', function ()
 		{
 			server.removeSocket (socket);
 		});
 
-		this.onSocket (socket, 'error', function ( error )
+		this._onSocket (socket, 'error', function ( error )
 		{
 			logger.log (`Socket error: ${error}`);
 		});
 
-		this.onSocket (socket, 'data', function ( data )
+		this._onSocket (socket, 'data', function ( data )
 		{
 			this._onData (socket, data);
 		});
@@ -48,6 +48,16 @@ module.exports = PxSys =>
 		{
 			callback (socket, ...dataArray);
 		}
+	};
+
+	PxSys.prototype._onSocket = function  ( socket, event, callback )
+	{
+		return socket.on (event, callback.bind (this));
+	};
+
+	PxSys.prototype._offSocket = function  ( socket, event, callback )
+	{
+		return socket.off (event, callback);
 	};
 
 	PxSys.prototype.onPacket = function ( type, callback )
