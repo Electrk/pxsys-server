@@ -77,6 +77,16 @@ Adds a callback to the internal TCP server.  Uses the default `net` server so it
 Removes a callback from the internal TCP server.
 
 
+#### `PxSys::onPacket (packetCommand, callback);`
+
+Adds a callback for handling a specific client command.  The first argument for the callback is *always* the sender's `Socket` instance.
+
+
+#### `PxSys::offPacket (packetCommand, callback);`
+
+Removes a callback for handling a specific client command.
+
+
 #### `PxSys::sendCommand (socket, command[, ...args]);`
 
 Sends a command to a specific client with whatever arguments.
