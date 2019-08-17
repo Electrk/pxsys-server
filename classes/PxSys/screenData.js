@@ -50,4 +50,22 @@ module.exports = PxSys =>
 
 		this._screen.clearChangedPixels ();
 	};
+
+	PxSys.prototype.sendAllPixelData = function ( socket = null )
+	{
+		this._screen.forEach (( pixelData, x, y ) =>
+		{
+			for ( let i in pixelData )
+			{
+				if ( socket === null )
+				{
+					this.sendSocketCommandToAll ('SV_PIXEL_DATA', x, y, i, pixelData[i]);
+				}
+				else
+				{
+					this.sendSocketCommand (socket, 'SV_PIXEL_DATA', x, y, i, pixelData[i]);
+				}
+			}
+		});
+	};
 };
