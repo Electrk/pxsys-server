@@ -60,31 +60,31 @@ module.exports = PxSys =>
 		return socket.off (event, callback);
 	};
 
-	PxSys.prototype.onPacket = function ( type, callback )
+	PxSys.prototype.onPacket = function ( packetType, callback )
 	{
 		const handlers = this._packetHandlers;
 
-		if ( !handlers.has (type) )
+		if ( !handlers.has (packetType) )
 		{
-			handlers.set (type, new Set ());
+			handlers.set (packetType, new Set ());
 		}
 
-		const handlerSet = handlers.get (type);
+		const handlerSet = handlers.get (packetType);
 		handlerSet.add (callback);
 
 		return callback;
 	};
 
-	PxSys.prototype.offPacket = function ( type, callback )
+	PxSys.prototype.offPacket = function ( packetType, callback )
 	{
 		const handlers = this._packetHandlers;
 
-		if ( !handlers.has (type) )
+		if ( !handlers.has (packetType) )
 		{
 			return callback;
 		}
 
-		const handlerSet = handlers.get (type);
+		const handlerSet = handlers.get (packetType);
 		handlerSet.delete (callback);
 
 		return callback;
