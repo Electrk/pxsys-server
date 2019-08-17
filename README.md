@@ -23,7 +23,7 @@ pxObject.onServer ('connection', socket =>
 {
 	// Send the screen's width and height to the socket
 	pxObject.sendScreenData (socket);
-    // Send all current pixel data to the socket
+	// Send all current pixel data to the socket
 	pxObject.sendPixelData (socket);
 });
 ```
