@@ -32,7 +32,7 @@ Each pixel contains various key-value pairs that store data for various fields, 
 
 To set a specific field for a specific pixel, use `pxObject.setScreenPixel (x, y, key, value);`
 
-When you're done, call `pxObject.sendChangedPixels ();` to send only the pixels and only the fields in those pixels that were changed, to all clients or a specific client (see [API](#api)).
+When you're done, call `pxObject.sendChangedPixels ();` to send only the pixels and only the fields in those pixels that were changed.
 
 If you want to send all pixel data regardless of whether they were changed or not, use `pxObject.sendPixelData ();`
 
