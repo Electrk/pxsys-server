@@ -46,33 +46,33 @@ class PxSys
 		this.isDeleted = true;
 	}
 
-	sendSocketCommand ( socket, command, ...args )
+	sendCommand ( socket, command, ...args )
 	{
 		this._server.sendCommand (socket, command, ...args);
 	}
 
-	sendSocketError ( socket, errorCommand, errorCode, errorMessage, data )
+	sendError ( socket, errorCommand, errorCode, errorMessage, data )
 	{
-		this.sendSocketCommand (socket, errorCommand, errorCode, errorMessage, data);
+		this.sendCommand (socket, errorCommand, errorCode, errorMessage, data);
 	}
 
-	sendSocketCommandToAll ( command, ...args )
+	sendCommandToAll ( command, ...args )
 	{
 		const pxObject = this;
 
 		this._server.forEach (socket =>
 		{
-			pxObject.sendSocketCommand (socket, command, ...args);
+			pxObject.sendCommand (socket, command, ...args);
 		});
 	}
 
-	sendSocketErrorToAll ( errorCommand, errorCode, errorMessage, data )
+	sendErrorToAll ( errorCommand, errorCode, errorMessage, data )
 	{
 		const pxObject = this;
 
 		this._server.forEach (socket =>
 		{
-			pxObject.sendSocketError (socket, errorCommand, errorMessage, data);
+			pxObject.sendError (socket, errorCommand, errorMessage, data);
 		});
 	}
 

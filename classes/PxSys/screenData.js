@@ -12,11 +12,11 @@ module.exports = PxSys =>
 
 		if ( socket === null )
 		{
-			this.sendSocketCommandToAll ('SV_SCREEN_SIZE', screen.width, screen.height);
+			this.sendCommandToAll ('SV_SCREEN_SIZE', screen.width, screen.height);
 		}
 		else
 		{
-			this.sendSocketCommand (socket, 'SV_SCREEN_SIZE', screen.width, screen.height);
+			this.sendCommand (socket, 'SV_SCREEN_SIZE', screen.width, screen.height);
 		}
 	}
 
@@ -40,11 +40,11 @@ module.exports = PxSys =>
 
 			if ( socket === null )
 			{
-				this.sendSocketCommandToAll ('SV_PIXEL_DATA', x, y, key, value);
+				this.sendCommandToAll ('SV_PIXEL_DATA', x, y, key, value);
 			}
 			else
 			{
-				this.sendSocketCommand (socket, 'SV_PIXEL_DATA', x, y, key, value);
+				this.sendCommand (socket, 'SV_PIXEL_DATA', x, y, key, value);
 			}
 		}
 
@@ -59,11 +59,11 @@ module.exports = PxSys =>
 			{
 				if ( socket === null )
 				{
-					this.sendSocketCommandToAll ('SV_PIXEL_DATA', x, y, i, pixelData[i]);
+					this.sendCommandToAll ('SV_PIXEL_DATA', x, y, i, pixelData[i]);
 				}
 				else
 				{
-					this.sendSocketCommand (socket, 'SV_PIXEL_DATA', x, y, i, pixelData[i]);
+					this.sendCommand (socket, 'SV_PIXEL_DATA', x, y, i, pixelData[i]);
 				}
 			}
 		});
