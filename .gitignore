@@ -65,4 +65,4 @@ typings/
 *.sublime-workspace
 
 # Temporary test file
-./test.js
+test.js
