@@ -31,7 +31,7 @@ class PxSys
 		this._screen.delete ();
 		this._server.delete (onServerClose);
 
-		for ( let [packetType, handlerSet] of this._packetHandlers )
+		for ( let [packetCommand, handlerSet] of this._packetHandlers )
 		{
 			handlerSet.clear ();
 		}

@@ -28,21 +28,21 @@ module.exports = PxSys =>
 
 	PxSys.prototype._onData = function ( socket, data )
 	{
-		const dataString = data.toString ().replace (/\r?\n|\r/g, '');
-		const dataArray  = dataString.split ('\t');
-		const packetType = dataArray[0];
+		const dataString    = data.toString ().replace (/\r?\n|\r/g, '');
+		const dataArray     = dataString.split ('\t');
+		const packetCommand = dataArray[0];
 
 		const handlers = this._packetHandlers;
 
-		if ( !handlers.has (packetType) )
+		if ( !handlers.has (packetCommand) )
 		{
 			return;
 		}
 
-		// Remove packet type since we don't want to include it in the callback arguments
+		// Remove packet command since we don't want to include it in the callback arguments.
 		dataArray.shift ();
 
-		const handlerSet = handlers.get (packetType);
+		const handlerSet = handlers.get (packetCommand);
 
 		for ( let callback of handlerSet )
 		{
@@ -60,31 +60,31 @@ module.exports = PxSys =>
 		return socket.off (event, callback);
 	};
 
-	PxSys.prototype.onPacket = function ( packetType, callback )
+	PxSys.prototype.onPacket = function ( packetCommand, callback )
 	{
 		const handlers = this._packetHandlers;
 
-		if ( !handlers.has (packetType) )
+		if ( !handlers.has (packetCommand) )
 		{
-			handlers.set (packetType, new Set ());
+			handlers.set (packetCommand, new Set ());
 		}
 
-		const handlerSet = handlers.get (packetType);
+		const handlerSet = handlers.get (packetCommand);
 		handlerSet.add (callback);
 
 		return callback;
 	};
 
-	PxSys.prototype.offPacket = function ( packetType, callback )
+	PxSys.prototype.offPacket = function ( packetCommand, callback )
 	{
 		const handlers = this._packetHandlers;
 
-		if ( !handlers.has (packetType) )
+		if ( !handlers.has (packetCommand) )
 		{
 			return callback;
 		}
 
-		const handlerSet = handlers.get (packetType);
+		const handlerSet = handlers.get (packetCommand);
 		handlerSet.delete (callback);
 
 		return callback;
