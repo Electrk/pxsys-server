@@ -48,7 +48,7 @@ Creates a `PxSys` instance with an internal `PxSysScreen` instance attached to i
 | ----------- | ----------- |
 | width       | The width of the internal `PxSysScreen` object.  |
 | height      | The height of the internal `PxSysScreen` object. |
-| defaultValues | An object containing the default values for pixels for the internal `PxSysScreen` object.  Default is `{ colorID: 0 }` |
+| defaultValues | An object containing the default values for pixels in the internal `PxSysScreen` object.  Default object is `{ colorID: 0 }` |
 
 
 #### `PxSys::createServer (port, address[, callbacks]);`
@@ -58,7 +58,7 @@ Starts up an internal `PxSysServer` instance for handling connections.
 | Argument     | Description |
 | ----------- | ----------- |
 | port       | The port to listen to. |
-| address      | The address to listen to. |
+| address      | The address to listen on. |
 | callbacks | An object containing callbacks for the server.  Supported callbacks are `onStart` and `onEnd` |
 
 
@@ -79,27 +79,27 @@ Removes a callback from the internal TCP server.
 
 #### `PxSys::sendCommand (socket, command[, ...args]);`
 
-Send a command to a specific client with whatever arguments.
+Sends a command to a specific client with whatever arguments.
 
 
 #### `PxSys::sendError (socket, errorCommand, errorCode[, errorMessage, data]);`
 
-Send an error to a specific client with an optional error message and whatever additional data.
+Sends an error to a specific client with an optional error message and whatever additional data.
 
 
 #### `PxSys::sendCommandToAll (command[, ...args]);`
 
-Send a command to all clients with whatever arguments.
+Sends a command to all clients with whatever arguments.
 
 
 #### `PxSys::sendErrorToAll (errorCommand, errorCode[, errorMessage, data]);`
 
-Send an error to all clients with an optional error message and whatever additional data.
+Sends an error to all clients with an optional error message and whatever additional data.
 
 
 #### `PxSys::sendScreenData ([socket]);`
 
-Send screen width and height (`SV_SCREEN_SIZE`) to a specific client, or to all of them if `socket` is not specified.
+Sends screen width and height (`SV_SCREEN_SIZE`) to a specific client, or to all of them if `socket` is not specified.
 
 
 #### `PxSys::setScreenPixel (x, y, key, value);`
@@ -130,23 +130,36 @@ Sends all pixel fields regardless of whether they were changed or not (`SV_PIXEL
 
 ## Commands and Errors
 
-This package uses some internal commands already using a simple format: `SV_SCREEN_DATA` and `SV_PIXEL_DATA`.
+This package uses some internal commands already using a simple format: `PREFIX_NAME`
 
 There are three prefixes:
 * `SV` - This is a command specifically to be sent from the server to the client.
 * `CL` - This is a command specifically to be sent from the client to the server.
 * `CS` - This is a command that can be sent by both.
 
-Error codes share the same format.
+**Example:** `SV_PIXEL_DATA`
 
-You can send your own commands using the `PxSys::sendCommand` method (see [API](#api)).  Obviously they don't *have* to use this format, just like you don't *have* to recycle or tip your waiter or thank your bus driver... it's just a good idea to do it.
+You can send your own commands using the `PxSys::sendCommand` method (see [API](#pxsyssendcommand-socket-command-args)).
+***
+Sending errors works in a similar way.  The difference is that there are both error commands and error codes.
+
+Error *commands* are only one of these three:
+* `SV_ERROR` - The server is at fault.
+* `CL_ERROR` - The client is at fault.
+* `CS_ERROR` - Nobody is at fault!  It's just an unfortunate error.
+
+Error *codes* are just strings without the prefix.  **Example:** `MALFORMED_PACKET`
+
+You can send your own commands using the `PxSys::sendError` method (see [API](#pxsyssenderror-socket-errorcommand-errorcode-errormessage-data)).
+***
+Obviously none of your own commands or errors *have* to use this format, just like you don't *have* to recycle or tip your waiter or thank your bus driver... it's just a good idea to do it.
 
 
 ## Additional Information
 
-This package is best used in junction with [Server_PxSys](https://github.com/Electrk/Server_PxSys).  You can of course use your own client though.
+This package is best used in conjunction with [Server_PxSys](https://github.com/Electrk/Server_PxSys).  You can of course use your own client though.
 
 You may have noticed I mentioned the `colorPrintID` field.  This is a special field for setting a brick's print to a PxSys color.  This allows for much sharper pixel changes since changing a brick's print doesn't fade like changing its color does.  [Here is the default pack](https://github.com/Electrk/Print_PxSys_Default) of colors.
 
 
-<sup>does anybody want a pizza roll??? leave a comment at this webzone if you want me to mail you a pizza roll</sup>
+<sup>does anybody want a pizza roll?? leave a comment at this webzone if you want me to mail you a pizza roll</sup>
