@@ -20,7 +20,6 @@ module.exports =
 			defaultValues.colorID = 0;
 		}
 
-		const screen = new PxSysScreen (width, height, defaultValues);
-		return new PxSys (screen);
+		return new PxSys (new PxSysScreen (width, height, defaultValues));
 	},
 };
