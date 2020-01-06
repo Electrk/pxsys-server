@@ -167,7 +167,7 @@ Obviously none of your own commands or errors *have* to use this format, just li
 
 ## Additional Information
 
-This package is best used in conjunction with [Server_PxSys](https://github.com/Electrk/Server_PxSys).  You can of course use your own client though.
+This package is best used in conjunction with [Support_PxSys](https://github.com/Electrk/Support_PxSys).  You can of course use your own client though.
 
 You may have noticed I mentioned the `colorPrintID` field.  This is a special field for setting a brick's print to a PxSys color.  This allows for much sharper pixel changes since changing a brick's print doesn't fade like changing its color does.  [Here is the default pack](https://github.com/Electrk/Print_PxSys_Default) of colors.
 
